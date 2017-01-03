@@ -40,7 +40,7 @@
  * * RUN->ACC?
  * 
  * @author Chris Fitzpatrick
- * @version 0.5 12/26/2016
+ * @version 0.6 01/01/2017
  * @license MIT License
  */
 
@@ -119,12 +119,20 @@ void loop() {
 
   // System is enabled, process as normal
   if (digitalRead(KILL_SWITCH) == HIGH) { // HIGH = System Enabled, LOW = Disabled
+    // If we were disabled move to OFF
+    if (runState == DISABLED) {
+      runState = OFF;
+    }
     // Read in the button state to see if it has been pressed
     int buttonState = digitalRead(PUSH_BUTTON);
     if (buttonState != previousButtonState) {
       // Only transition on HIGH state so we do not bounce
       if (buttonState == HIGH) {
         switch (runState){
+          case DISABLED: // Disabled -> Off
+            // This state should never be hit, but is included for completeness.
+            runState = OFF;
+            break;
           case OFF: // Off -> Acc
             runState = ACC;
             digitalWrite(RELAY_ACC, LOW);
