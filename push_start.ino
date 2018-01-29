@@ -162,11 +162,14 @@ void loop() {
           case RUN: // Run -> Off or ACC
             //Serial.println(millis() - pressTime);
             // Transition back to ACC if button was held longer than HOLD_MS otherwise
-            // go to OFF
+            // go to OFF.
+            runState = OFF;
             if (millis() - pressTime > HOLD_MS) {
-              runState = ACC;  
-            } else {
-              runState = OFF;
+              // In order for the engine to turn off to we need to transition to OFF, 
+              //wait and then to ACC  
+              setRelayState();
+              delay(500);
+              runState = ACC;
             }
             break;
         }
